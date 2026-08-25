@@ -2,6 +2,7 @@ package taskrunner
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"sync"
 	"testing"
@@ -9,6 +10,33 @@ import (
 
 	"dfclientkit/account"
 )
+
+// 回归测试：RunConfig 经常被消费方匿名嵌入进自己的 Config 结构体再整体序列化
+// （比如通过 Wails 传给前端）。如果字段丢了 json tag，encoding/json 会退化成用
+// Go 字段名（首字母大写）当 key，前端按 camelCase 读会全部拿到 undefined——这个
+// bug 在 githubbaidu 迁移到 dfclientkit 时真实发生过一次，这里锁死不能再犯。
+func TestRunConfigJSONFieldNamesAreCamelCase(t *testing.T) {
+	cfg := RunConfig{
+		Threads: 1, IntervalSec: 2, PerAccountCount: 3,
+		FailSwitchCount: 4, CycleRounds: 5, RoundIntervalSec: 6, CreateRepo: true,
+	}
+	b, err := json.Marshal(cfg)
+	if err != nil {
+		t.Fatalf("Marshal() error = %v", err)
+	}
+	var m map[string]any
+	if err := json.Unmarshal(b, &m); err != nil {
+		t.Fatalf("Unmarshal() error = %v", err)
+	}
+	for _, key := range []string{
+		"threads", "intervalSec", "perAccountCount",
+		"failSwitchCount", "cycleRounds", "roundIntervalSec", "createRepo",
+	} {
+		if _, ok := m[key]; !ok {
+			t.Errorf("序列化结果缺少 camelCase 字段 %q，实际是 %s", key, b)
+		}
+	}
+}
 
 type testItem struct {
 	Title string

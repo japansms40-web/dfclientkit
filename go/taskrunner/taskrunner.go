@@ -56,15 +56,18 @@ type IndexedAccount struct {
 	Account account.Account
 }
 
-// RunConfig 是一次批量任务的运行参数。
+// RunConfig 是一次批量任务的运行参数。json tag 显式给出是因为消费方通常会把
+// 它内嵌进自己的 Config 结构体再整体序列化（比如通过 Wails 传给前端）——匿名嵌入
+// 字段没有 tag 时，encoding/json 会退化成用 Go 字段名（首字母大写）当 JSON key，
+// 和前端约定的 camelCase 字段名对不上。
 type RunConfig struct {
-	Threads          int  // 并发线程数
-	IntervalSec      int  // 同一账号相邻两次处理尝试之间的等待秒数
-	PerAccountCount  int  // 单个账号最多处理多少次
-	FailSwitchCount  int  // 账号连续失败达到此次数就换号
-	CycleRounds      int  // 账号池整体循环轮数
-	RoundIntervalSec int  // 相邻两轮之间的等待秒数
-	CreateRepo       bool // 处理账号前是否先建仓库/空间
+	Threads          int  `json:"threads"`          // 并发线程数
+	IntervalSec      int  `json:"intervalSec"`      // 同一账号相邻两次处理尝试之间的等待秒数
+	PerAccountCount  int  `json:"perAccountCount"`  // 单个账号最多处理多少次
+	FailSwitchCount  int  `json:"failSwitchCount"`  // 账号连续失败达到此次数就换号
+	CycleRounds      int  `json:"cycleRounds"`      // 账号池整体循环轮数
+	RoundIntervalSec int  `json:"roundIntervalSec"` // 相邻两轮之间的等待秒数
+	CreateRepo       bool `json:"createRepo"`       // 处理账号前是否先建仓库/空间
 }
 
 // Normalize 纠正非法数值，供消费方在保存/发起任务前调用，也在 Run 内部兜底调用。
