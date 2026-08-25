@@ -4,7 +4,7 @@ package runlog
 import (
 	"fmt"
 
-	"dfclientkit/taskrunner"
+	"github.com/japansms40-web/dfclientkit/go/taskrunner"
 )
 
 // Kind 标识一条日志在前端应使用的着色分类，前端据此映射到主题色。

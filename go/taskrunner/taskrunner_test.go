@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"dfclientkit/account"
+	"github.com/japansms40-web/dfclientkit/go/account"
 )
 
 // 回归测试：RunConfig 经常被消费方匿名嵌入进自己的 Config 结构体再整体序列化

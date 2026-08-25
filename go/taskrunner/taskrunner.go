@@ -11,7 +11,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"dfclientkit/account"
+	"github.com/japansms40-web/dfclientkit/go/account"
 )
 
 // Requester 执行一次"用某账号处理某个 Item"的请求，返回结果描述或错误。
@@ -40,7 +40,7 @@ const (
 // Event 是回传给上层的进度事件。
 type Event struct {
 	Kind         EventKind
-	AccountIndex int    // 账号在原始队列中的下标；EventRoundStart/RoundProgress/RoundDone 不适用
+	AccountIndex int // 账号在原始队列中的下标；EventRoundStart/RoundProgress/RoundDone 不适用
 	CK           string
 	ItemLabel    string // 本次处理对象的展示文案（比如文章标题），由调用方通过 itemLabel 提供
 	Result       string // 成功时 Requester 返回的结果描述

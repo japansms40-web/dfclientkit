@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"dfclientkit/taskrunner"
+	"github.com/japansms40-web/dfclientkit/go/taskrunner"
 )
 
 func TestTagForKindsAndHighlight(t *testing.T) {
